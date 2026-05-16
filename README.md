@@ -4,9 +4,9 @@
 Для корректной работы приложения вам понадобятся установленные `Node.js` и `Docker`.
 
 ### Устанавливаем зависимости для `Node.js`
-  1) Заходим в todo-app-fontend-master
+  1) Заходим в todo-app-fontend
      
-  2) Открываем todo-app-frontend-master в терминале
+  2) Открываем todo-app-frontend в терминале
 
   3) Вводим команду:  
      ```python
@@ -49,9 +49,9 @@
 ### Поднимаем Фронтенд
 Делаем следующие действия:
 
-  1) Заходим в `todo-app-fontend-master`
+  1) Заходим в `todo-app-fontend`
 
-  2) Открываем `todo-app-frontend-master в терминале
+  2) Открываем `todo-app-frontend` в терминале
 
   3) Вводим команду:  
      ```python
