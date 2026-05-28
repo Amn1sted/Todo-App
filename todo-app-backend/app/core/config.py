@@ -9,6 +9,6 @@ class Settings:
 
 def get_settings() -> Settings: 
     return Settings(
-        DATABASE_URL='postgresql+psycopg://postgres:admin@localhost:15432/postgres',
+        DATABASE_URL='postgresql+psycopg://user:password@db:5432/todo-db',
         cors_allowed_origins=['http://localhost:3000']
     )
