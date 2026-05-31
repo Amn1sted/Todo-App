@@ -12,9 +12,9 @@ services:
       - data:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD", "pg_isready", "-U", "user", "-d", "todo-db"]
-      interval: 2s
-      timeout: 1s
-      retries: 3
+      interval: 3s
+      timeout: 5s
+      retries: 5
 
   backend:
     build: ./todo-app-backend
