@@ -1,9 +1,5 @@
-from uuid import uuid4
-from fastapi import FastAPI, status, HTTPException, Depends
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
-from sqlalchemy import select
-from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, Session
 from contextlib import asynccontextmanager
 from app.models.base import Base
 from app.db.session import engine
