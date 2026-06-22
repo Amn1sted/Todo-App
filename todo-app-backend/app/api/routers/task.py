@@ -5,7 +5,7 @@ from app.api.dependencies import get_task_service
 from app.services.task import TaskNotFound
 
 
-task_router = APIRouter(prefix='/tasks')
+task_router = APIRouter(prefix='/tasks', tags=['tasks'])
 
 
 @task_router.get('')
