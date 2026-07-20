@@ -8,9 +8,12 @@ class CategorySchema(BaseModel):
     name: str
 
 
-class CreateCategorySchema(BaseModel):
+class CategoryCreateSchema(BaseModel):
     name: str
 
 
-class UpdateCategorySchema(CreateCategorySchema):
+class CategoryUpdateSchema(CategoryCreateSchema):
+    """Схемы для обновления и для создания идентичны,
+    поэтому CategoryUpdateSchema наследуется от CategoryCreateSchema
+    """
     pass

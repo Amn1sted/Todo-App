@@ -1,0 +1,13 @@
+node_modules
+dist
+.git
+__pycache__
+.venv
+Dockerfile
+.env
+.env.docker
+.git
+__pycache__
+*.pyc
+.venv
+.pytest_cache

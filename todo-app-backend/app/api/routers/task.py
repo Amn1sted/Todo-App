@@ -28,6 +28,6 @@ def update_task(task_id: str, payload: TaskUpdateSchema, task_service: TaskServi
 @task_router.delete('/{task_id}', status_code=status.HTTP_204_NO_CONTENT)
 def delete_task(task_id: str, task_service: TaskService = Depends(get_task_service)) -> None:
     try:
-        return task_service.delete_task(task_id)
+        return task_service.delete_task(task_id=task_id)
     except TaskNotFound:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='Task not found')

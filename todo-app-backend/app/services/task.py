@@ -12,34 +12,51 @@ class TaskNotFound(Exception):
 
 class TaskService:
 
+
     def __init__(self, db: Session) -> None:
         
         self.db = db
         self.task_repository = TaskRepository(db)
-        self.cache = RedisCacheBackend(settings.redis_url, settings.cache_ttl_seconds)
+        self.cache = RedisCacheBackend(settings.REDIS_URL, settings.CACHE_TTL_SECONDS)
+
 
     def list_tasks(self) -> list[TaskSchema]:
-        cached_tasks = self.cache.get(settings.cache_tasks_key)
+        """Получение списка задач"""
+
+        # Получение задачи из кэша, если она в нём имеется
+        cached_tasks = self.cache.get(settings.CACHE_TASKS_KEY)
         if cached_tasks is not None:
-            return cached_tasks
+            tasks = [TaskSchema.model_validate(task) for task in cached_tasks]
+            return tasks
 
         tasks_orm = self.task_repository.get_all()
 
         task_read = [TaskSchema.model_validate(task) for task in tasks_orm]
         tasks_for_cache = [task.model_dump() for task in task_read]
-        self.cache.set(settings.cache_tasks_key, tasks_for_cache)
+
+        # Добавление задач в кэш
+        self.cache.set(settings.CACHE_TASKS_KEY, tasks_for_cache)
 
         return task_read
     
-    def create_task(self, task_create: TaskCreateSchema) -> TaskSchema: 
-        self.cache.delete(settings.cache_tasks_key)
+
+    def create_task(self, task_create: TaskCreateSchema) -> TaskSchema:
+        """Создание задачи"""
+
+        # Инвалидируем кэш
+        self.cache.delete(settings.CACHE_TASKS_KEY)
 
         task_orm = self.task_repository.create(title=task_create.title)
         self.db.commit()
+        self.db.refresh(task_orm)
         return TaskSchema.model_validate(task_orm)
 
+
     def update_task(self, task_id: str, task_update: TaskUpdateSchema) -> TaskSchema:
-        self.cache.delete(settings.cache_tasks_key)
+        """Обновление задачи"""
+
+        # Инвалидируем кэш
+        self.cache.delete(settings.CACHE_TASKS_KEY)
 
         task_for_update = self.task_repository.get_by_id(task_id=task_id)
         if task_for_update is None:
@@ -51,14 +68,19 @@ class TaskService:
             task_for_update.completed = task_update.completed
     
         self.db.commit()
+        self.db.refresh(task_for_update)
         return TaskSchema.model_validate(task_for_update)
     
-    def delete_task(self, task_id: str) -> None:
-        self.cache.delete(settings.cache_tasks_key)
 
-        task_for_delete = self.task_repository.get_by_id(task_id)
+    def delete_task(self, task_id: str) -> None:
+        """Удаление задачи"""
+        
+        # Инвалидируем кэш
+        self.cache.delete(settings.CACHE_TASKS_KEY)
+
+        task_for_delete = self.task_repository.get_by_id(task_id=task_id)
         if task_for_delete is None:
             raise TaskNotFound(f'Задача с id {task_id} не найдена')
         
-        self.task_repository.delete(task_for_delete)
+        self.task_repository.delete(task=task_for_delete)
         self.db.commit()
