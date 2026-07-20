@@ -1,20 +1,21 @@
-from dataclasses import dataclass
+from functools import lru_cache
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
-
-@dataclass(frozen=True)
-class Settings:
-    DATABASE_URL: str 
-    redis_url: str
-    cache_ttl_seconds: int
-    cache_tasks_key: str
-    cors_allowed_origins: list[str]
-
-
-def get_settings() -> Settings: 
-    return Settings(
-        DATABASE_URL='postgresql+psycopg://user:password@db:5432/todo-db',
-        redis_url='redis://redis:6379/0',
-        cache_ttl_seconds=3600,
-        cache_tasks_key='cache:tasks_list',
-        cors_allowed_origins=['http://localhost:3000']
+class Settings(BaseSettings):
+    model_config = SettingsConfigDict(
+        env_file='../.env', 
+        env_file_encoding='utf-8',
+        extra='ignore'
     )
+
+    DATABASE_URL: str
+    TEST_DATABASE_URL: str
+    REDIS_URL: str
+    CACHE_TTL_SECONDS: int
+    CACHE_TASKS_KEY: str
+    CACHE_CATEGORIES_KEY: str
+    CORS_ALLOWED_ORIGINS: list[str]
+
+@lru_cache
+def get_settings() -> Settings:
+    return Settings()
